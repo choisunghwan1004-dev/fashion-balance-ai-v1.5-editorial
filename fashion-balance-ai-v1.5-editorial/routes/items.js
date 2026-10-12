@@ -1,0 +1,6 @@
+const router=require('express').Router();const db=require('../db');
+const select=`SELECT i.*,c.name category_name,co.name color_name,s.name style_name FROM fashion_items i JOIN categories c ON c.id=i.category_id JOIN colors co ON co.id=i.color_id JOIN styles s ON s.id=i.style_id`;
+router.get('/',async(req,res,next)=>{try{const [rows]=await db.query(select+' WHERE i.active=1 AND i.owner_user_id IS NULL ORDER BY i.id DESC LIMIT 500');res.json(rows)}catch(e){next(e)}});
+// 로컬 데모 관리자 API: 운영 환경에서는 인증과 권한 확인 필수
+router.post('/',async(req,res,next)=>{try{const {name,category_id,color_id,style_id,season,price,image_url,shop_url}=req.body;const validUrl=v=>!v||(/^https?:\/\//i.test(v)&&v.length<=500);if(!name||String(name).length>120||!Number.isInteger(+category_id)||+category_id<1||+category_id>10||![1,2,3,4,5,6].includes(+color_id)||![1,2,3,4].includes(+style_id)||!['봄','여름','가을','겨울','사계절'].includes(season)||!Number.isInteger(+price)||+price<0||!validUrl(image_url)||!validUrl(shop_url))return res.status(400).json({error:'입력값을 확인하세요'});const [r]=await db.execute('INSERT INTO fashion_items(name,category_id,color_id,style_id,season,price,image_url,shop_url) VALUES(?,?,?,?,?,?,?,?)',[name,+category_id,+color_id,+style_id,season,+price,image_url||null,shop_url||null]);res.status(201).json({id:r.insertId})}catch(e){next(e)}});
+module.exports=router;

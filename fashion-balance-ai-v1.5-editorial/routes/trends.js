@@ -1,0 +1,1 @@
+const router=require('express').Router();const db=require('../db');router.get('/',async(req,res,next)=>{try{const [rows]=await db.query('SELECT t.*,s.name style_name FROM trends t JOIN styles s ON s.id=t.style_id ORDER BY t.year DESC,t.id DESC LIMIT 50');res.json(rows)}catch(e){next(e)}});module.exports=router;
