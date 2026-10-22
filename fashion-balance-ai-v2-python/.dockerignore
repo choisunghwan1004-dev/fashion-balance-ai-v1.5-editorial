@@ -1,0 +1,7 @@
+.env
+.venv
+private
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+V1.9_ORIGINAL_BACKUP.zip

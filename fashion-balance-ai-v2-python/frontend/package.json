@@ -1,0 +1,22 @@
+{
+  "name": "fashion-balance-ai-react",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@fontsource/noto-sans-kr": "^5.3.1",
+    "html-react-parser": "6.1.9",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.5"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}
