@@ -45,10 +45,12 @@ def analyze(data):
         fail(503,'AI 사진 분석 API 키가 없습니다. 직접 선택과 기기 내 색상 추정은 이용할 수 있습니다.')
     fields = {k:OPTIONS[k] for k in FIELDS[kind] if k in OPTIONS}
     instruction = '패션 참고 분석이다. JSON 객체만 반환하라. 각 필드는 다음 선택지만 사용한다: '+json.dumps(fields,ensure_ascii=False)+'. confidence는 0~1. garment는 의류 종류/색상/계절/패턴과 한국어 name. face는 명확한 얼굴 윤곽만, body는 명확한 전신 의복의 시각적 실루엣만 분석한다. 불명확하면 미선택/알 수 없음. 나이·인종·건강·체중·신체 치수·미모는 추론하지 않는다.'
+    model = os.getenv('OPENAI_VISION_MODEL', 'gpt-6-luna')
     try:
         response = httpx.post('https://api.openai.com/v1/responses',headers={'Authorization':'Bearer '+os.environ['OPENAI_API_KEY']},timeout=20,json={
-            'model':os.getenv('OPENAI_VISION_MODEL','gpt-4.1-mini'),'store':False,'max_output_tokens':250,
-            'input':[{'role':'user','content':[{'type':'input_text','text':instruction},{'type':'input_image','image_url':data['data']}]}]})
+            'model':model,'store':False,'max_output_tokens':250,
+            'input':[{'role':'user','content':[{'type':'input_text','text':instruction},{'type':'input_image','image_url':data['data']}]}],
+            **({'reasoning': {'effort': 'none'}} if model == 'gpt-6-luna' else {})})
         if not response.is_success:
             fail(502,'AI 서비스 요청 실패. API 설정·사용 한도를 확인하세요.')
         text = ''.join(c.get('text','') for o in response.json().get('output',[]) for c in o.get('content',[]) if c.get('type')=='output_text')
