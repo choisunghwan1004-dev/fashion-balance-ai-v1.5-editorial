@@ -257,7 +257,7 @@ def photo(filename: str, user=Depends(auth.required)):
 
 @app.get('/api/vision/status')
 def vision_status(user=Depends(auth.required)):
-    return {'ai_enabled':bool(os.getenv('OPENAI_API_KEY')),'model':os.getenv('OPENAI_VISION_MODEL','gpt-4.1-mini')}
+    return {'ai_enabled':bool(os.getenv('OPENAI_API_KEY')),'model':os.getenv('OPENAI_VISION_MODEL','gpt-6-luna')}
 
 
 @app.post('/api/vision/analyze')
